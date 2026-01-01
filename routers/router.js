@@ -52,18 +52,20 @@ router.post("/api/messages/encrypt", authenticateUser, async (req, res) => {
         cipher_type: cipherType,
         encrypted_text: revers,
         inserted_at: new Date(),
-      });
+      }).select();
     if (error) {
       return res.status(404).json({ msg: error });
     }const coll = await dataBaseMDB
       .collection(mongoDb_NAME)
       .find({username:username})
       .toArray();
-    const collection = await dataBaseMDB
+    const collection1 = coll[0].encryptedMessagesCount;
+     await dataBaseMDB
       .collection(mongoDb_NAME)
       .updateOne(
         { username:username },
-        { $set: { encryptedMessagesCount: collection+1 } }
+        { $inc: { encryptedMessagesCount: 1 } }
+      
       );
 
     return res
@@ -89,11 +91,16 @@ router.post("/api/messages/encrypt", authenticateUser, async (req, res) => {
     if (error) {
       return res.status(404).json({ msg: error });
     }
-    const collection = await dataBaseMDB
+    const coll = await dataBaseMDB
+      .collection(mongoDb_NAME)
+      .find({username:username})
+      .toArray();
+    const collection1 = coll[0].encryptedMessagesCount;
+     await dataBaseMDB
       .collection(mongoDb_NAME)
       .updateOne(
-        { _id: new ObjectId() },
-        { $set: { encryptedMessagesCount: +1 } }
+        { username:username },
+        { $inc: { encryptedMessagesCount: 1 } }
       );
 
     return res
