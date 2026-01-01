@@ -55,7 +55,7 @@ router.post("/api/messages/encrypt", authenticateUser, async (req, res) => {
       });
     if (error) {
       return res.status(404).json({ msg: error });
-    }const coll = await dataBaseMDB[0].encryptedMessagesCount
+    }const coll = await dataBaseMDB
       .collection(mongoDb_NAME)
       .find({username:username})
       .toArray();
